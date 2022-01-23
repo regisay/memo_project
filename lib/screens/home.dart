@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:memomemo/screens/edit.dart';
 import 'package:memomemo/database/db.dart';
 import 'package:memomemo/database/memo.dart';
+import 'package:memomemo/screens/view.dart';
+import 'package:memomemo/screens/write.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -21,6 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+
   String deleteId = '';
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,10 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.only(left: 5, top: 40, bottom: 20),
             child: Container(
               child: Text('메모메모',
-                  style: TextStyle(fontSize: 36, color: Colors.blue,)),
+                  style: TextStyle(
+                    fontSize: 36,
+                    color: Colors.blue,
+                  )),
               alignment: Alignment.centerLeft,
             ),
           ),
@@ -44,11 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => EditPage(),
-            ),
-          ).then((value) {
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => WritePage(
+                        id: '',
+                      ))).then((value) {
             setState(() {});
           });
         },
@@ -57,15 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
         icon: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-
-  List<Widget> LoadMemo() {
-    List<Widget> memoList = [];
-    memoList.add(Container(
-      color: Colors.blue,
-      height: 100,
-    ));
-    return memoList;
   }
 
   Future<List<Memo>> loadMemo() async {
@@ -109,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
+
   Widget memoBuilder(BuildContext parentcontext) {
     return FutureBuilder(
       builder: (context, projectSnap) {
@@ -125,50 +123,70 @@ class _MyHomePageState extends State<MyHomePage> {
           itemBuilder: (context, index) {
             Memo memo = (projectSnap.data as List)[index];
             return InkWell(
-                onTap: () {},
-                onLongPress: () {
-                  deleteId = memo.id;
-                  showAlertDialog(parentcontext);
-                  //deleteMemo(memo.id);
-                },
-                child: Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(240, 240, 240, 1),
-                      border: Border.all(
-                        color: Colors.blueAccent,
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(color: Colors.cyanAccent, blurRadius: 3)
-                      ],
-                      borderRadius: BorderRadius.circular(13),
-                    ),
-                    child:
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Text(memo.title,
+              onTap: () {
+                Navigator.push(
+                    parentcontext,
+                    CupertinoPageRoute(
+                        builder: (context) => EditPage(id: memo.id)));
+              },
+              onLongPress: () {
+                deleteId = memo.id;
+                showAlertDialog(parentcontext);
+                //deleteMemo(memo.id);
+              },
+              child: Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(15),
+                  alignment: Alignment.center,
+                  height: 100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Text(
+                            memo.title,
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w500)),
-                        Text(memo.text, style: TextStyle(fontSize: 15)),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            Text(
-                              " 최종 수정 시간 " + memo.editTime.split('.')[0],
-                              style: TextStyle(fontSize: 11),
-                              textAlign: TextAlign.end,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ],
-                        )
-                      ],
-                    )));
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            memo.text,
+                            style: TextStyle(fontSize: 20),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Text(
+                            " 최종 수정 시간 " + memo.editTime.split('.')[0],
+                            style: TextStyle(fontSize: 11),
+                            textAlign: TextAlign.end,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1),
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(color: Colors.lightBlue, blurRadius: 3)
+                    ],
+                    borderRadius: BorderRadius.circular(12),
+                  )),
+            );
           },
         );
       },

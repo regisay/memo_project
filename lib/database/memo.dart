@@ -1,12 +1,11 @@
-
 class Memo {
-   var id;
-   var title;
-   var text;
-   var createTime;
-   var editTime;
+  var id;
+  var title;
+  var text;
+  var createTime;
+  var editTime;
 
-  Memo({ this.id,  this.title,  this.text,  this.createTime,  this.editTime});
+  Memo({this.id, this.title, this.text, this.createTime, this.editTime});
 
   Map<String, dynamic> toMap() {
     return {

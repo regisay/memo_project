@@ -13,7 +13,6 @@ class DBHelper {
     _db = openDatabase(
       // 데이터베이스 경로를 지정합니다. 참고: `path` 패키지의 `join` 함수를 사용하는 것이
       // 각 플랫폼 별로 경로가 제대로 생성됐는지 보장할 수 있는 가장 좋은 방법입니다.
-      // 깃허브 변경 확인용 문구랑께
       join(await getDatabasesPath(), 'memos.db'),
       // 데이터베이스가 처음 생성될 때, dog를 저장하기 위한 테이블을 생성합니다.
       onCreate: (db, version) {
@@ -43,7 +42,6 @@ class DBHelper {
 
   Future<List<Memo>> memos() async {
     final db = await database;
-
     // 모든 Memo를 얻기 위해 테이블에 질의합니다.
     final List<Map<String, dynamic>> maps = await db.query('memos');
     // List<Map<String, dynamic>를 List<Memo>으로 변환합니다.
@@ -74,7 +72,6 @@ class DBHelper {
 
   Future<void> deleteMemo(String id) async {
     final db = await database;
-
     // 데이터베이스에서 Memo를 삭제합니다.
     await db.delete(
       TableName,
@@ -84,5 +81,24 @@ class DBHelper {
       whereArgs: [id],
     );
   }
+
+  Future<List<Memo>> findMemo(String id) async {
+    final db = await database;
+    // 모든 Memo를 얻기 위해 테이블에 질의합니다.
+    final List<Map<String, dynamic>> maps =
+      await db.query('memos', where: 'id = ?', whereArgs: [id]);
+    // List<Map<String, dynamic>를 List<Memo>으로 변환합니다.
+    return List.generate(maps.length, (i) {
+      return Memo(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        text: maps[i]['text'],
+        createTime: maps[i]['createTime'],
+        editTime: maps[i]['editTime'],
+      );
+    });
+  }
+
+
 }
 
