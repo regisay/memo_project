@@ -107,7 +107,6 @@ class _EditPageState extends State<EditPage> {
       createTime: this.createTime,
       editTime: DateTime.now().toString(),
     );
-
     sd.updateMemo(fido);
     Navigator.pop(_context);
   }

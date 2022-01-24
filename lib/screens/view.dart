@@ -4,19 +4,21 @@ import 'package:memomemo/database/memo.dart';
 import 'package:memomemo/database/db.dart';
 import 'package:memomemo/screens/edit.dart';
 
+
 class Viewpage extends StatefulWidget {
-  const Viewpage({Key? key,required this.id}) : super(key: key);
+  const Viewpage({Key? key, required this.id}) : super(key: key);
 
   final String id;
+
 
   @override
   _ViewpageState createState() => _ViewpageState();
 }
 
 class _ViewpageState extends State<Viewpage> {
-
   late BuildContext _context;
   String deleteId = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,31 +27,32 @@ class _ViewpageState extends State<Viewpage> {
     return Scaffold(
         appBar: AppBar(
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: (){
-                showAlertDialog(context);
-                deleteId = memo.id;
-              },),
+            // IconButton(
+            //   icon: const Icon(Icons.delete),
+            //   onPressed: () {
+            //     showAlertDialog(context);
+            //     deleteId = memo.id;
+            //   },
+            // ),
             IconButton(
               icon: const Icon(Icons.edit),
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                     context,
                     CupertinoPageRoute(
-                    builder:(context)=>EditPage(id: widget.id)));
+                        builder: (context) => EditPage(id: widget.id)));
               },
             ),
           ],
         ),
-        body: Padding(padding:EdgeInsets.all(20), child: LoadBuilder()
-        ));
+        body: Padding(padding: EdgeInsets.all(20), child: LoadBuilder()));
   }
 
   Future<List<Memo>> loadMemo(String id) async {
     DBHelper sd = DBHelper();
     return await sd.findMemo(id);
   }
+
   Future<void> deleteMemo(String id) async {
     DBHelper sd = DBHelper();
     await sd.deleteMemo(id);
@@ -58,34 +61,38 @@ class _ViewpageState extends State<Viewpage> {
   LoadBuilder() {
     return FutureBuilder<List<Memo>>(
       future: loadMemo(widget.id),
-      builder: (BuildContext context,AsyncSnapshot<List<Memo>>
-      snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<Memo>> snapshot) {
         if ((snapshot.data as List).length == 0) {
-          return Container(
-              child: Text("데이터를 불러올 수 없습니다.")
-          );
+          return Container(child: Text("데이터를 불러올 수 없습니다."));
         } else {
           Memo memo = snapshot.data![0];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children:<Widget>[
-              Container(height: 100,
-                child : SingleChildScrollView(
-                  child: Text(memo.title,
-                    style: TextStyle(fontSize: 30, fontWeight : FontWeight.w500),
+            children: <Widget>[
+              Container(
+                height: 100,
+                child: SingleChildScrollView(
+                  child: Text(
+                    memo.title,
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
-              Text("메모 만든 시간 " + memo.createTime.split('.')[0],
+              Text(
+                "메모 만든 시간 " + memo.createTime.split('.')[0],
                 style: TextStyle(fontSize: 13),
-                textAlign: TextAlign.end,),
-              Text("메모 수정 시간 " + memo.editTime.split('.')[0],
+                textAlign: TextAlign.end,
+              ),
+              Text(
+                "메모 수정 시간 " + memo.editTime.split('.')[0],
                 style: TextStyle(fontSize: 13),
-                textAlign: TextAlign.end,),
-              Padding(
-                  padding:EdgeInsets.all(10)),
+                textAlign: TextAlign.end,
+              ),
+              Padding(padding: EdgeInsets.all(10)),
               Expanded(
-                child: SingleChildScrollView(child: Text(memo.text),),
+                child: SingleChildScrollView(
+                  child: Text(memo.text),
+                ),
               )
             ],
           );
@@ -93,6 +100,7 @@ class _ViewpageState extends State<Viewpage> {
       },
     );
   }
+
   void showAlertDialog(BuildContext context) async {
     await showDialog(
       context: context,
@@ -106,10 +114,7 @@ class _ViewpageState extends State<Viewpage> {
               child: Text('삭제'),
               onPressed: () {
                 Navigator.pop(context, "삭제");
-                setState(() {
                   deleteMemo(deleteId);
-                });
-                deleteId = '';
                 Navigator.pop(_context);
               },
             ),
@@ -125,8 +130,4 @@ class _ViewpageState extends State<Viewpage> {
       },
     );
   }
-
 }
-
-
-
