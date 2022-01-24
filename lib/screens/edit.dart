@@ -17,6 +17,7 @@ class _EditPageState extends State<EditPage> {
   String title ='';
   String text = '';
   String createTime = '';
+  String editTime = '';
 
 
   @override
@@ -44,10 +45,10 @@ class _EditPageState extends State<EditPage> {
     return FutureBuilder<List<Memo>>(
       future: loadMemo(widget.id),
       builder: (BuildContext context, AsyncSnapshot<List<Memo>> snapshot) {
-        if (snapshot.data == null || snapshot.data == []) {
+        if (snapshot.data == null ) {
           return Container(child: Text("데이터를 불러올 수 없습니다."));
         } else {
-          Memo memo = (snapshot.data?.length = 0) as Memo;
+          Memo memo = snapshot.data![0];
 
           var tecTitle = TextEditingController();
           title = memo.title;

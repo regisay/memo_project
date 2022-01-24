@@ -4,22 +4,11 @@ import 'package:memomemo/database/db.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert'; // for utf encoding
 
-class WritePage extends StatefulWidget {
-  WritePage({Key? key, required this.id}) : super(key: key);
-
-  final String id;
-
-  @override
-  _EditPageState createState() => _EditPageState();
-}
-
-class _EditPageState extends State<WritePage> {
-  late BuildContext _context;
+class WritePage extends StatelessWidget {
 
   String title = '';
   String text = '';
-  String createTime = '';
-
+  late BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +16,6 @@ class _EditPageState extends State<WritePage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {},
-            ),
             IconButton(
               icon: const Icon(Icons.save),
               onPressed: saveDB,
@@ -70,13 +55,11 @@ class _EditPageState extends State<WritePage> {
         )
     );
   }
-
   Future<void> saveDB() async {
     DBHelper sd = DBHelper();
 
     var fido = Memo(
       id: Str25ha512(DateTime.now().toString()),
-      // String
       title: this.title,
       text: this.text,
       createTime: DateTime.now().toString(),

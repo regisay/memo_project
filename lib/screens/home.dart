@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:memomemo/screens/edit.dart';
 import 'package:memomemo/database/db.dart';
 import 'package:memomemo/database/memo.dart';
-import 'package:memomemo/screens/view.dart';
 import 'package:memomemo/screens/write.dart';
+import 'package:memomemo/screens/view.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -16,13 +15,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   String deleteId = '';
   @override
@@ -49,13 +41,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-              context,
+          setState(() {
+            Navigator.push(
+                context,
               CupertinoPageRoute(
-                  builder: (context) => WritePage(
-                        id: '',
-                      ))).then((value) {
-            setState(() {});
+                builder: (context) => WritePage(),
+              ),
+            ).then((value){
+              setState((){});
+            });
           });
         },
         tooltip: '노트를 추가하려면 클릭하세요',
@@ -76,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void showAlertDialog(BuildContext context) async {
-    String result = await showDialog(
+     await showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
@@ -110,6 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget memoBuilder(BuildContext parentcontext) {
     return FutureBuilder(
       builder: (context, projectSnap) {
+        Memo memo = new Memo();
         if ((projectSnap.data as List).length == 0) {
           //print('project snapshot data is: ${projectSnap.data}');
           return Container(
@@ -119,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         return ListView.builder(
           physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.all(20),
           itemCount: (projectSnap.data as List).length,
           itemBuilder: (context, index) {
             Memo memo = (projectSnap.data as List)[index];
@@ -127,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.push(
                     parentcontext,
                     CupertinoPageRoute(
-                        builder: (context) => EditPage(id: memo.id)));
+                        builder: (context) => Viewpage(id: memo.id)));
               },
               onLongPress: () {
                 deleteId = memo.id;
